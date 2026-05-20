@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로드킬 예방을 위한 우리동네 생태 지도</title>
+    <title>우리동네 생태 및 장소 검색 지도</title>
     <style>
         * {
             margin: 0;
@@ -21,7 +21,7 @@
             height: 100%;
         }
 
-        /* 왼쪽 사이드바 (카테고리 메뉴 및 리스트) */
+        /* 왼쪽 사이드바 */
         .sidebar {
             width: 380px;
             height: 100%;
@@ -32,10 +32,10 @@
             z-index: 10;
         }
 
-        /* 안내 문구 영역 */
+        /* 상단 안내 타이틀 */
         .info-header {
             padding: 20px;
-            background-color: #2ecc71; /* 생태 느낌의 초록색 */
+            background-color: #2ecc71; /* 친환경 초록색 */
             color: white;
         }
         .info-header h2 {
@@ -47,34 +47,66 @@
             opacity: 0.9;
         }
 
-        /* 환경 키워드 탭 메뉴 (그리드 배치) */
-        .tab-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 5px;
-            padding: 10px;
+        /* [기능 유지] 검색창 영역 */
+        .search-box {
+            padding: 15px;
             background-color: #fff;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #eee;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        .tab-btn {
-            padding: 12px;
-            font-size: 13px;
+        .search-box-wrapper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .search-box input {
+            width: 73%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            outline: none;
+        }
+        .search-box button {
+            width: 23%;
+            padding: 8px;
+            font-size: 14px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .search-box button:hover {
+            background-color: #27ae60;
+        }
+
+        /* [추가] 생태/환경 카테고리 버튼들 (그리드 배치) */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin-top: 5px;
+        }
+        .category-btn {
+            padding: 8px 5px;
+            font-size: 11px;
             font-weight: bold;
             text-align: center;
             background-color: #f1f2f6;
             border: 1px solid #ced6e0;
-            border-radius: 6px;
+            border-radius: 4px;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .tab-btn:hover {
+        .category-btn:hover {
             background-color: #e4e7eb;
         }
-        .tab-btn.active {
-            background-color: #2ecc71;
-            color: white;
+        .category-btn.active {
+            background-color: #e8f5e9;
+            color: #2ecc71;
             border-color: #2ecc71;
-            box-shadow: 0 2px 5px rgba(46, 204, 113, 0.3);
         }
 
         /* 결과 리스트 영역 */
@@ -106,7 +138,7 @@
             font-size: 12px;
             color: #747d8c;
         }
-        .category-tag {
+        .tag-info {
             display: inline-block;
             margin-bottom: 5px;
             padding: 2px 6px;
@@ -129,21 +161,28 @@
     <div class="container">
         <div class="sidebar">
             <div class="info-header">
-                <h2>Eco-Map 탐색기</h2>
-                <p>내 주변의 야생동물 서식지 및 이동 통로를 확인하세요.</p>
+                <h2>Eco & Place 탐색기</h2>
+                <p>장소를 직접 검색하거나 생태 버튼을 눌러 주변을 확인하세요.</p>
             </div>
 
-            <div class="tab-grid">
-                <button class="tab-btn" onclick="searchEnvironment('생태통로', this)">🌲 생태통로</button>
-                <button class="tab-btn" onclick="searchEnvironment('생태터널', this)">🕳️ 생태터널</button>
-                <button class="tab-btn" onclick="searchEnvironment('공원', this)">🌳 공원</button>
-                <button class="tab-btn" onclick="searchEnvironment('산', this)">⛰️ 산 / 야산</button>
-                <button class="tab-btn" onclick="searchEnvironment('하천', this)">🌊 하천 / 습지</button>
+            <div class="search-box">
+                <div class="search-box-wrapper">
+                    <input type="text" id="keyword" placeholder="장소, 정류장, 역 등을 입력하세요" value="강남역">
+                    <button onclick="searchPlaces()">검색</button>
+                </div>
+                
+                <div class="category-grid">
+                    <button class="category-btn" onclick="searchCategory('생태통로', this)">🌲 생태통로</button>
+                    <button class="category-btn" onclick="searchCategory('생태터널', this)">🕳️ 생태터널</button>
+                    <button class="category-btn" onclick="searchCategory('공원', this)">🌳 공원</button>
+                    <button class="category-btn" onclick="searchCategory('산', this)">⛰️ 산</button>
+                    <button class="category-btn" onclick="searchCategory('하천', this)">🌊 하천</button>
+                </div>
             </div>
 
             <div id="placesList" class="list-area">
                 <p style="text-align:center; padding:20px; color:#999; font-size:13px;">
-                    위의 탭을 선택하면<br>현재 위치 주변의 장소를 검색합니다.
+                    검색어를 입력하거나 버튼을 클릭하면<br>결과가 이곳에 표시됩니다.
                 </p>
             </div>
         </div>
@@ -157,35 +196,33 @@
         let map;
         let ps; 
         let infowindow;
-        let currentLatLng = null; // 현재 나의 위치를 저장할 변수
-        let markers = [];         // 지도 위 마커들을 관리할 배열
+        let currentLatLng = null; // 현재 위치 좌표 저장
+        let markers = [];         // 지도 위 마커 관리 배열
 
-        // 안전한 지도 로딩
+        // 안전한 지도 로딩 후 초기화
         kakao.maps.load(function() {
             const mapContainer = document.getElementById('map'); 
+            const defaultPosition = new kakao.maps.LatLng(37.5546788, 126.9706069); // 기본 서울역
             
-            // 위치 권한 수락 전 기본 중심점 (서울역)
-            const defaultPosition = new kakao.maps.LatLng(37.5546788, 126.9706069);
             const mapOption = {
                 center: defaultPosition, 
-                level: 5 // 고등학생인 네가 요청했던 확대 레벨 5 유지
+                level: 5 // 요청한 확대 레벨 5 유지
             };
 
             map = new kakao.maps.Map(mapContainer, mapOption);
             ps = new kakao.maps.services.Places();
             infowindow = new kakao.maps.InfoWindow({zIndex:1});
 
-            // 현재 위치 권한 요청 받아오기
+            // 현재 위치 권한 요청
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
                     
-                    // 현재 위치 좌표 세팅
                     currentLatLng = new kakao.maps.LatLng(lat, lon);
                     map.setCenter(currentLatLng);
                     
-                    // 내 현재 위치 표시 마커
+                    // 내 현재 위치 마커 표시
                     const marker = new kakao.maps.Marker({
                         map: map,
                         position: currentLatLng
@@ -194,12 +231,8 @@
                     infowindow.setContent('<div style="padding:5px; font-size:12px; text-align:center; font-weight:bold;">내 현재 위치</div>');
                     infowindow.open(map, marker);
 
-                    // 위치 정보를 정상적으로 가져오면 자동으로 첫 번째 탭인 '생태통로'를 검색함
-                    const firstTab = document.querySelector('.tab-btn');
-                    searchEnvironment('생태통로', firstTab);
-
                 }, function(error) {
-                    alert("위치 권한을 동의해주셔야 현재 위치 주변 탐색이 정확합니다. (기본 위치로 설정)");
+                    console.log("위치 권한 거부: 기본 위치를 사용합니다.");
                     currentLatLng = defaultPosition;
                 });
             } else {
@@ -207,73 +240,88 @@
             }
         });
 
-        // 탭을 눌렀을 때 내 주변 환경 요소를 카카오 API로 검색하는 함수
-        function searchEnvironment(keyword, element) {
-            // 버튼 활성화 스타일 처리
-            const buttons = document.querySelectorAll('.tab-btn');
+        // 1. [기능 유지] 사용자가 입력창에 친 키워드로 검색하는 함수
+        function searchPlaces() {
+            const keyword = document.getElementById('keyword').value;
+            if (!keyword.trim()) {
+                alert('검색어를 입력해 주세요!');
+                return;
+            }
+
+            // 카테고리 버튼들의 활성화(초록색 글씨) 효과 제거
+            const buttons = document.querySelectorAll('.category-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // 일반 검색은 전국 단위 혹은 현재 중심점 기준으로 자유롭게 검색되도록 옵션 없이 요청
+            ps.keywordSearch(keyword, searchCB); 
+        }
+
+        // 2. [추가] 생태 버튼을 눌렀을 때 '내 주변 5km' 안의 장소를 검색하는 함수
+        function searchCategory(keyword, element) {
+            // 버튼 활성화 스타일 적용
+            const buttons = document.querySelectorAll('.category-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
             element.classList.add('active');
+
+            // 입력창 글자도 버튼 이름으로 동기화해주기
+            document.getElementById('keyword').value = keyword;
 
             if (!currentLatLng) {
                 alert("아직 현재 위치를 불러오는 중입니다. 잠시만 기다려주세요.");
                 return;
             }
 
-            // 카카오 키워드 검색 옵션 설정 (★내 위치 중심으로 검색하기 위해 location과 radius 지정)
+            // 내 위치 기반 반경 5km 이내 우선 검색 옵션
             const searchOptions = {
-                location: currentLatLng, // 내 현재 위치 기준
-                radius: 5000,            // 반경 5km 이내 검색 (대상을 넓히기 위해 설정)
-                sort: kakao.maps.services.SortBy.ACCURACY // 정확도 순 정렬
+                location: currentLatLng,
+                radius: 5000,
+                sort: kakao.maps.services.SortBy.ACCURACY
             };
 
-            // 검색 실행
-            ps.keywordSearch(keyword, environmentSearchCB, searchOptions);
+            ps.keywordSearch(keyword, searchCB, searchOptions);
         }
 
-        // 검색 완료 시 호출되는 콜백 함수
-        function environmentSearchCB(data, status) {
+        // 검색 완료 공통 콜백 함수
+        function searchCB(data, status) {
             const listEl = document.getElementById('placesList');
             
             if (status === kakao.maps.services.Status.OK) {
-                displayEnvironmentPlaces(data);
+                displayPlaces(data);
             } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
                 clearMarkers();
-                listEl.innerHTML = '<p style="text-align:center; padding:20px; color:#999; font-size:13px;">주변 5km 이내에 해당 시설/장소 결과가 없습니다.</p>';
+                listEl.innerHTML = '<p style="text-align:center; padding:20px; color:#999; font-size:13px;">검색 결과가 없습니다.</p>';
             } else {
                 alert('검색 중 오류가 발생했습니다.');
             }
         }
 
-        // 검색된 생태/환경 장소들을 리스트와 지도에 뿌려주는 함수
-        function displayEnvironmentPlaces(places) {
+        // 검색 결과를 화면에 뿌려주는 함수
+        function displayPlaces(places) {
             const listEl = document.getElementById('placesList');
             const bounds = new kakao.maps.LatLngBounds();
             
-            listEl.innerHTML = ''; // 리스트 초기화
+            listEl.innerHTML = ''; // 리스트 비우기
             clearMarkers();        // 이전 마커 지우기
-
-            // 현재 선택된 탭의 이름을 태그로 쓰기 위해 가져옴
-            const activeTabName = document.querySelector('.tab-btn.active').innerText.split(' ')[1];
 
             for (let i = 0; i < places.length; i++) {
                 const placePosition = new kakao.maps.LatLng(places[i].y, places[i].x);
                 const marker = addMarker(placePosition);
                 
-                // 왼쪽 리스트 카드 HTML 생성
+                // 리스트에 들어갈 카드 디자인 생성
                 const itemEl = document.createElement('div');
                 itemEl.className = 'item-card';
                 itemEl.innerHTML = `
-                    <span class="category-tag">#${activeTabName}</span>
+                    <span class="tag-info">📍 결과 ${i+1}</span>
                     <h5>${places[i].place_name}</h5>
                     <p>${places[i].road_address_name || places[i].address_name}</p>
                     ${places[i].phone ? `<p style="color:#a4b0be; margin-top:2px;">📞 ${places[i].phone}</p>` : ''}
                 `;
 
-                // 리스트 카드 클릭 및 마커 클릭 이벤트 연결
+                // 마커 및 카드 클릭 이벤트 바인딩
                 (function(marker, title, address) {
                     const content = `
-                        <div style="padding:10px; font-size:12px; min-width:200px;">
-                            <strong style="color:#2ecc71;">[${activeTabName}]</strong> <strong>${title}</strong><br>
+                        <div style="padding:10px; font-size:12px; min-width:180px;">
+                            <strong style="color:#2ecc71;">${title}</strong><br>
                             <span style="color:#666; font-size:11px; display:inline-block; margin-top:4px;">${address}</span>
                         </div>
                     `;
@@ -287,7 +335,7 @@
                         infowindow.setContent(content);
                         infowindow.open(map, marker);
                         map.setCenter(marker.getPosition());
-                        map.setLevel(4); // 자세히 볼 수 있도록 확대 변경
+                        map.setLevel(4); // 클릭 시 지도 확대 축척 변경
                     };
                 })(marker, places[i].place_name, places[i].road_address_name || places[i].address_name);
 
@@ -295,7 +343,7 @@
                 bounds.extend(placePosition);
             }
 
-            // 검색 결과들이 지도 안에 다 들어오도록 자동 화면 맞춤
+            // 검색된 마커들이 다 보이게 지도 범위 맞춤
             map.setBounds(bounds);
         }
 
@@ -309,7 +357,7 @@
             return marker;
         }
 
-        // 지도 위 마커 청소 함수
+        // 마커 지우기 함수
         function clearMarkers() {
             for (let i = 0; i < markers.length; i++) {
                 markers[i].setMap(null);
