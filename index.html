@@ -18,70 +18,12 @@
             overflow: hidden;
         }
 
-        /* 🚨 [절대 방어] 진입 시 무조건 최상단에 노출되도록 락을 건 중앙 팝업 레이아웃 */
-        .modal-overlay {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            background-color: rgba(0, 0, 0, 0.75) !important; /* 배경 어둡게 차단 */
-            display: flex !important;
-            justify-content: center !important;
-            align-items: center !important;
-            z-index: 999999 !important; /* 카카오맵보다 무조건 위에 뜨도록 지정 */
-        }
-        .modal-box {
-            background-color: white !important;
-            width: 480px !important;
-            padding: 35px !important;
-            border-radius: 16px !important;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4) !important;
-            text-align: center !important;
-        }
-        .modal-box h3 {
-            font-size: 24px;
-            color: #2ecc71; /* 친환경 초록 포인트 */
-            margin-bottom: 12px;
-        }
-        .modal-box p {
-            font-size: 14px;
-            color: #4c566a;
-            margin-bottom: 25px;
-            line-height: 1.5;
-        }
-        .modal-input-group {
-            display: flex;
-            gap: 8px;
-        }
-        .modal-box input {
-            flex: 1;
-            padding: 14px;
-            font-size: 16px;
-            border: 2px solid #ced4da;
-            border-radius: 8px;
-            outline: none;
-        }
-        .modal-box input:focus { border-color: #2ecc71; }
-        .modal-box button {
-            padding: 14px 24px;
-            font-size: 16px;
-            background-color: #2ecc71;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .modal-box button:hover { background-color: #27ae60; }
-
         /* 메인 컨테이너 배치 */
         .container {
             display: flex;
             width: 100%;
             height: 100%;
             position: relative;
-            z-index: 1;
         }
 
         /* 왼쪽 사이드바 */
@@ -96,7 +38,7 @@
             box-shadow: 2px 0 10px rgba(0,0,0,0.05);
         }
 
-        /* 상단 타이틀 영역 */
+        /* 상단 타이틀 영역 (한 줄 소개 적용) */
         .info-header {
             padding: 20px;
             background-color: #2ecc71;
@@ -109,9 +51,10 @@
         .info-header p {
             font-size: 12px;
             opacity: 0.9;
+            line-height: 1.4;
         }
 
-        /* [요청반영] 가로 정렬로 예쁘게 정돈된 검색창 및 탭 영역 */
+        /* 가로 정렬로 예쁘게 정돈된 검색창 및 탭 영역 */
         .search-box {
             padding: 15px;
             background-color: #fff;
@@ -143,10 +86,10 @@
         }
         .search-box button:hover { background-color: #27ae60; }
 
-        /* 가로 스크롤형 및 슬라이드형 예쁜 가로 탭 배치 */
+        /* 가로 스크롤형 예쁜 가로 탭 배치 */
         .category-tabs-container {
             width: 100%;
-            overflow-x: auto; /* 내용 많아지면 가로로 스크롤 가능 */
+            overflow-x: auto;
             padding-bottom: 4px;
         }
         .category-tabs-container::-webkit-scrollbar {
@@ -167,7 +110,7 @@
             font-weight: bold;
             background-color: #f1f2f6;
             border: 1px solid #ced6e0;
-            border-radius: 20px; /* 둥글둥글하고 트렌디한 알약 모양 탭 버튼 */
+            border-radius: 20px; /* 트렌디한 알약 모양 탭 버튼 */
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -216,7 +159,7 @@
             border-radius: 4px;
         }
 
-        /* 페이지 맨 구석(우하단) 고정 위치 안내 바 */
+        /* 페이지 맨 구석(우하단) 고정 위치 제어 바 */
         .floating-location-box {
             position: absolute;
             bottom: 20px;
@@ -254,22 +197,11 @@
 </head>
 <body>
 
-    <div id="startModal" class="modal-overlay">
-        <div class="modal-box">
-            <h3>🌲 탐색 지역 설정</h3>
-            <p>Eco & Place 지도를 탐색할 기준 중심 지역을 지정해 주세요.<br><strong>시, 구, 동 단위</strong>로 입력하시면 편리합니다.</p>
-            <div class="modal-input-group">
-                <input type="text" id="modalAddressInput" placeholder="예: 상도동, 분당구, 고양시" onkeyup="if(window.event.keyCode==13){submitStartLocation()}">
-                <button onclick="submitStartLocation()">지도 열기</button>
-            </div>
-        </div>
-    </div>
-
     <div class="container">
         <div class="sidebar">
             <div class="info-header">
                 <h2>Eco & Place 탐색기</h2>
-                <p>장소를 직접 검색하거나 생태 버튼을 눌러 주변을 확인하세요.</p>
+                <p>내가 설정한 동네를 중심으로 주변의 공원, 산, 하천 등 푸른 자연 생태 공간을 한눈에 찾아주는 친환경 내비게이션</p>
             </div>
 
             <div class="search-box">
@@ -291,7 +223,7 @@
 
             <div id="placesList" class="list-area">
                 <p style="text-align:center; padding:20px; color:#999; font-size:13px;">
-                    지역을 선택하시면 결과가 이곳에 표시됩니다.
+                    하단의 '지역 설정' 버튼을 누르거나 검색어를 입력하시면 결과가 표시됩니다.
                 </p>
             </div>
         </div>
@@ -300,9 +232,9 @@
 
         <div class="floating-location-box">
             <div class="floating-info">
-                📍 기준지: <strong id="currentLocationText">지역 설정 필요</strong>
+                📍 기준지: <strong id="currentLocationText">서울역 (기본값)</strong>
             </div>
-            <button class="floating-btn" onclick="openLocationChangePopup()">📍 지역 변경</button>
+            <button class="floating-btn" onclick="promptLocationChange()">📍 지역 설정/변경</button>
         </div>
     </div>
 
@@ -318,26 +250,27 @@
         let centerMarker = null;
         let centerCircle = null;
 
-        // 안전한 지도 초기화
+        // 안전한 지도 초기화 (진입 시 팝업 없이 즉시 로드)
         kakao.maps.load(function() {
             const mapContainer = document.getElementById('map'); 
-            const defaultPosition = new kakao.maps.LatLng(37.5546788, 126.9706069); 
+            const defaultPosition = new kakao.maps.LatLng(37.5546788, 126.9706069); // 기본 서울역
             
             map = new kakao.maps.Map(mapContainer, { center: defaultPosition, level: 5 });
             ps = new kakao.maps.services.Places();
             geocoder = new kakao.maps.services.Geocoder();
             infowindow = new kakao.maps.InfoWindow({zIndex:1});
 
-            // 화면 로딩 즉시 중앙 인풋 박스 자동 포커싱
-            document.getElementById('modalAddressInput').focus();
+            // 초기 기준지 세팅
+            setBaseLocation(defaultPosition, "서울역 주변");
         });
 
-        // 팝업창 주소 입력 후 승인 컨트롤러
-        function submitStartLocation() {
-            const addrInput = document.getElementById('modalAddressInput').value;
+        // 하단 버튼 클릭 시 브라우저 내장 입력창(Prompt)으로 간단하게 지역 변경
+        function promptLocationChange() {
+            const addrInput = prompt("탐색할 중심 지역명을 입력해 주세요!\n(예: 상도동, 분당구, 고양시 등)");
             
+            if (addrInput === null) return; // 취소 누른 경우
             if (!addrInput.trim()) {
-                alert("탐색할 지역명을 입력해 주세요!");
+                alert("지역명을 입력해 주세요!");
                 return;
             }
 
@@ -349,24 +282,12 @@
                     // 해당 좌표를 지도 기준지로 임명
                     setBaseLocation(targetLatLng, result[0].address_name);
                     
-                    // 지도 잠금 모달창을 강제 오프(Close) 처리
-                    document.getElementById('startModal').style.setItem('display', 'none', 'important');
-                    document.getElementById('startModal').style.display = 'none';
-                    
-                    // 진입 성공 후 자동으로 첫 번째 가로 탭인 '생태통로' 스캔 원격 작동
+                    // 동네 변경 성공 시 자동으로 첫 번째 가로 탭인 '생태통로' 스캔 작동
                     searchCategory('생태통로', document.querySelector('.category-grid .category-btn'));
                 } else {
-                    alert("주소를 매칭하지 못했습니다. 시, 구, 동 명칭을 정확히 적고 다시 열어보세요.");
+                    alert("주소를 찾지 못했습니다. 시, 구, 동 명칭을 정확히 입력해 주세요.");
                 }
             });
-        }
-
-        // 주소 재수정용 우회 제어 모달 부팅 함수
-        function openLocationChangePopup() {
-            document.getElementById('startModal').style.setItem('display', 'flex', 'important');
-            document.getElementById('startModal').style.display = 'flex';
-            document.getElementById('modalAddressInput').value = '';
-            document.getElementById('modalAddressInput').focus();
         }
 
         // 탐색 기준 중심점 레이어 설정 및 5km 가시화
@@ -424,7 +345,6 @@
 
             if (!currentLatLng) return;
 
-            // 기준지 기준 5km 반경 우선 스캔 옵션 설정
             const searchOptions = {
                 location: currentLatLng,
                 radius: 5000,
